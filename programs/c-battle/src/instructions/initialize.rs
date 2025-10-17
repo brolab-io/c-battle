@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::{BattleConfig, CONFIG_SEED};
+use crate::{BattleConfig, CONFIG_SEED, VAULT_SEED};
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
@@ -14,6 +14,11 @@ pub struct Initialize<'info> {
         bump,
     )]
     pub battle_config: Account<'info, BattleConfig>,
+    #[account(
+        seeds = [VAULT_SEED],
+        bump
+    )]
+    pub vault: SystemAccount<'info>,
     pub system_program: Program<'info, System>,
 }
 
