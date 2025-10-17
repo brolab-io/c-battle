@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 
-use crate::{error::BattleErrorCode, Arena, BattleConfig, ARENA_SEED, CONFIG_SEED};
+use crate::{Arena, ARENA_SEED};
+
 
 #[derive(Accounts)]
 #[instruction(id: u64)]
@@ -24,6 +25,7 @@ pub struct ArenaCreated {
     pub creator: Pubkey,
     pub duration: u32,
     pub max_players: u8,
+    pub status: u8,
 }
 
 pub fn handler(ctx: Context<MakeArena>, id: u64, max_players:u8, duration: u32) -> Result<()> {
@@ -32,7 +34,9 @@ pub fn handler(ctx: Context<MakeArena>, id: u64, max_players:u8, duration: u32) 
             creator: ctx.accounts.signer.key(), 
             duration, 
             max_players, 
-            bump: ctx.bumps.arena 
+            bump: ctx.bumps.arena ,
+            current_players: 0,
+            status: 0,
         }
     );
     emit!(ArenaCreated {
@@ -40,6 +44,7 @@ pub fn handler(ctx: Context<MakeArena>, id: u64, max_players:u8, duration: u32) 
         creator: ctx.accounts.signer.key(),
         duration,
         max_players,
+        status: 0,
     });
     Ok(())
 }

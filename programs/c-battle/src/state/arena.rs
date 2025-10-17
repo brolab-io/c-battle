@@ -7,5 +7,7 @@ pub struct Arena {
     pub creator: Pubkey,
     pub duration: u32,
     pub max_players: u8,
+    pub current_players: u8,
+    pub status: u8, // e.g., 0 = waiting, 1 = active, 2 = completed
     pub bump: u8,
 }
