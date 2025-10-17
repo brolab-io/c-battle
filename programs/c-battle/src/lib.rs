@@ -32,4 +32,13 @@ pub mod c_battle {
             elimination_reward,
         )
     }
+
+    pub fn make_arena(
+        ctx: Context<MakeArena>,
+        id: u64,
+        max_players: u8,
+        duration: u32,
+    ) -> Result<()> {
+        make_area::handler(ctx, id, max_players, duration)
+    }
 }

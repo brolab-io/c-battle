@@ -18,6 +18,12 @@ describe("c-battle", () => {
     eliminationReward: new anchor.BN(10000),
   }
 
+  const arenaParams = {
+    id: new anchor.BN(1),
+    maxPlayers: 10,
+    duration: 300,
+  };
+
   const [configPda] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from("battle-config")],
     program.programId
@@ -40,5 +46,22 @@ describe("c-battle", () => {
     expect(configAccount.maxPlayersPerArena).to.eql(configParams.maxPlayersPerArena);
     expect(configAccount.battleDurationSecs).to.eql(configParams.battleDurationSecs);
     expect(configAccount.eliminationReward.eq(configParams.eliminationReward)).to.be.true;
+  });
+
+  it("Make an Arena!", async () => {
+    const tx = await program.methods.makeArena(
+      arenaParams.id,
+      arenaParams.maxPlayers,
+      arenaParams.duration,
+    ).rpc();
+    console.log("Your transaction signature", tx);
+    const arenaPda = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("arena"), arenaParams.id.toArrayLike(Buffer, "le", 8)],
+      program.programId
+    )[0];
+    const arenaAccount = await program.account.arena.fetch(arenaPda);
+    expect(arenaAccount.id.eq(arenaParams.id)).to.be.true;
+    expect(arenaAccount.maxPlayers).to.eql(arenaParams.maxPlayers);
+    expect(arenaAccount.duration).to.eql(arenaParams.duration);
   });
 });
